@@ -25,6 +25,7 @@ interface SessionConfigInterface {
   cookie: object;
 }
 
+
 const sessionConfig: SessionConfigInterface = {
   secret: process.env.SESS_SECRET,
   resave: false,
@@ -32,6 +33,7 @@ const sessionConfig: SessionConfigInterface = {
   cookie: {
     secure: "auto", // secure: true = http || secure: false = https
   },
+
 };
 
 app.use(session(sessionConfig));
