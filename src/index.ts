@@ -7,7 +7,8 @@ import dotenv from "dotenv";
 import cors from "cors";
 import session from "express-session";
 
-const app = express();
+
+const app: Application = express();
 dotenv.config();
 const PORT = process.env.PORT;
 
@@ -24,7 +25,6 @@ interface SessionConfigInterface {
   saveUninitialized: boolean;
   cookie: object;
 }
-
 
 const sessionConfig: SessionConfigInterface = {
   secret: process.env.SESS_SECRET,
