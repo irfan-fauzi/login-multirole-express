@@ -8,9 +8,11 @@ import cors from "cors";
 import session from "express-session";
 
 
+
 const app: Application = express();
 dotenv.config();
 const PORT = process.env.PORT;
+
 
 app.use(
   cors({
@@ -33,7 +35,6 @@ const sessionConfig: SessionConfigInterface = {
   cookie: {
     secure: "auto", // secure: true = http || secure: false = https
   },
-
 };
 
 app.use(session(sessionConfig));
