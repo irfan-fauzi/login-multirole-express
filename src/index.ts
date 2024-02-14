@@ -8,8 +8,10 @@ import cors from "cors";
 import RoleRoutes from "./routes/RolesRoutes";
 
 const app: Application = express();
+
 dotenv.config();
 const PORT = process.env.PORT;
+app.use(express.json())
 
 app.use(
   cors({
@@ -18,8 +20,6 @@ app.use(
   })
 );
 
-
-app.use(express.json());
 
 // routes
 app.get("/", (req: Request, res: Response) => {
