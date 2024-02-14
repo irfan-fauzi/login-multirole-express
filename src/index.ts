@@ -7,8 +7,6 @@ import dotenv from "dotenv";
 import cors from "cors";
 import session from "express-session";
 
-
-
 const app: Application = express();
 dotenv.config();
 const PORT = process.env.PORT;
