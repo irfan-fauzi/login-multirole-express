@@ -12,9 +12,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteRole = exports.updateRole = exports.createRole = exports.getRoles = void 0;
+exports.deleteRole = exports.updateRole = exports.createRole = exports.getRoleById = exports.getAllRoles = void 0;
 const Role_1 = __importDefault(require("../../models/Role"));
-const getRoles = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+// get All Roles
+const getAllRoles = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // const response = await Role.findAll({
         //   where: {
@@ -43,7 +44,42 @@ const getRoles = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
     }
 });
-exports.getRoles = getRoles;
+exports.getAllRoles = getAllRoles;
+// get Role By Id
+const getRoleById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        const role = yield Role_1.default.findByPk(id);
+        if (!role) {
+            return res.status(404).send({
+                status: 404,
+                message: "😢 Data not found",
+                data: null,
+            });
+        }
+        return res.status(200).send({
+            status: 200,
+            message: "🧮 data founded",
+            data: role,
+        });
+    }
+    catch (error) {
+        if (error != null && error instanceof Error) {
+            return res.status(500).send({
+                status: 500,
+                message: `😢 error because: ${error.message}`,
+                errors: error,
+            });
+        }
+        return res.status(500).send({
+            status: 500,
+            message: `🖥 internal server error`,
+            errors: error,
+        });
+    }
+});
+exports.getRoleById = getRoleById;
+// create new Role
 const createRole = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { roleName, active } = req.body;
@@ -70,6 +106,7 @@ const createRole = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.createRole = createRole;
+// Update Role
 const updateRole = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
@@ -107,6 +144,7 @@ const updateRole = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.updateRole = updateRole;
+// Delete Role
 const deleteRole = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
