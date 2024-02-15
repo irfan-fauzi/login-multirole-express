@@ -94,3 +94,40 @@ export const updateRole = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const deleteRole = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const role = await Role.findByPk(id);
+    if (!role) {
+      return res.status(404).send({
+        status: 404,
+        message: "😢 Data not found",
+        data: null,
+      });
+    }
+    await Role.destroy({
+      where: {
+        id: id,
+      },
+    });
+    res.status(200).send({
+      status: 200,
+      message: "user was deleted 🖐🚯",
+      data: null,
+    });
+  } catch (error) {
+    if (error != null && error instanceof Error) {
+      return res.status(500).send({
+        status: 500,
+        message: `😢 error because: ${error.message}`,
+        errors: error,
+      });
+    }
+    return res.status(500).send({
+      status: 500,
+      message: `🖥 internal server error`,
+      errors: error,
+    });
+  }
+};
