@@ -12,16 +12,137 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getRoles = void 0;
+exports.deleteRole = exports.updateRole = exports.createRole = exports.getRoles = void 0;
 const Role_1 = __importDefault(require("../../models/Role"));
 const getRoles = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        // const response = await Role.findAll({
+        //   where: {
+        //     active: true, // show only status active
+        //   },
+        // });
         const response = yield Role_1.default.findAll();
-        res.status(200).json(response);
+        return res.status(200).send({
+            status: 200,
+            message: "👍 OKE",
+            data: response,
+        });
     }
     catch (error) {
-        console.log(error);
+        if (error != null && error instanceof Error) {
+            return res.status(500).send({
+                status: 500,
+                message: `😢 error because: ${error.message}`,
+                errors: error,
+            });
+        }
+        return res.status(500).send({
+            status: 500,
+            message: `🖥 internal server error`,
+            errors: error,
+        });
     }
 });
 exports.getRoles = getRoles;
+const createRole = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { roleName, active } = req.body;
+        const newRole = yield Role_1.default.create({ roleName, active });
+        return res.status(201).send({
+            status: 201,
+            message: "💟 created",
+            data: newRole,
+        });
+    }
+    catch (error) {
+        if (error != null && error instanceof Error) {
+            return res.status(500).send({
+                status: 500,
+                message: `😢 error because: ${error.message}`,
+                errors: error,
+            });
+        }
+        return res.status(500).send({
+            status: 500,
+            message: `🖥 internal server error`,
+            errors: error,
+        });
+    }
+});
+exports.createRole = createRole;
+const updateRole = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        const { roleName, active } = req.body;
+        const role = yield Role_1.default.findByPk(id);
+        if (!role) {
+            return res.status(404).send({
+                status: 404,
+                message: "😢 Data not found",
+                data: null,
+            });
+        }
+        role.roleName = roleName;
+        role.active = active;
+        yield role.save();
+        return res.status(200).send({
+            status: 200,
+            message: "🎉 role succesfully updated",
+            data: role,
+        });
+    }
+    catch (error) {
+        if (error != null && error instanceof Error) {
+            return res.status(500).send({
+                status: 500,
+                message: `😢 error because: ${error.message}`,
+                errors: error,
+            });
+        }
+        return res.status(500).send({
+            status: 500,
+            message: `🖥 internal server error`,
+            errors: error,
+        });
+    }
+});
+exports.updateRole = updateRole;
+const deleteRole = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        const role = yield Role_1.default.findByPk(id);
+        if (!role) {
+            return res.status(404).send({
+                status: 404,
+                message: "😢 Data not found",
+                data: null,
+            });
+        }
+        yield Role_1.default.destroy({
+            where: {
+                id: id,
+            },
+        });
+        res.status(200).send({
+            status: 200,
+            message: "user was deleted 🖐🚯",
+            data: null,
+        });
+    }
+    catch (error) {
+        if (error != null && error instanceof Error) {
+            return res.status(500).send({
+                status: 500,
+                message: `😢 error because: ${error.message}`,
+                errors: error,
+            });
+        }
+        return res.status(500).send({
+            status: 500,
+            message: `🖥 internal server error`,
+            errors: error,
+        });
+    }
+});
+exports.deleteRole = deleteRole;
 //# sourceMappingURL=RolesController.js.map
