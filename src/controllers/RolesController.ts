@@ -1,7 +1,8 @@
 import { type Request, type Response } from "express";
 import Role from "../../models/Role";
 
-export const getRoles = async (req: Request, res: Response) => {
+// get All Roles
+export const getAllRoles = async (req: Request, res: Response) => {
   try {
     // const response = await Role.findAll({
     //   where: {
@@ -30,6 +31,45 @@ export const getRoles = async (req: Request, res: Response) => {
   }
 };
 
+// get Role By Id
+
+export const getRoleById = async (req:Request, res:Response) => {
+  try {
+    const { id } = req.params;
+    const role = await Role.findByPk(id);
+
+    if (!role) {
+      return res.status(404).send({
+        status: 404,
+        message: "😢 Data not found",
+        data: null,
+      });
+    }
+
+    return res.status(200).send({
+      status: 200,
+      message: "🧮 data founded",
+      data: role,
+    });
+
+    
+  } catch (error) {
+    if (error != null && error instanceof Error) {
+      return res.status(500).send({
+        status: 500,
+        message: `😢 error because: ${error.message}`,
+        errors: error,
+      });
+    }
+    return res.status(500).send({
+      status: 500,
+      message: `🖥 internal server error`,
+      errors: error,
+    });
+  }
+}
+
+// create new Role
 export const createRole = async (req: Request, res: Response) => {
   try {
     const { roleName, active } = req.body;
@@ -55,6 +95,7 @@ export const createRole = async (req: Request, res: Response) => {
   }
 };
 
+// Update Role
 export const updateRole = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -95,6 +136,7 @@ export const updateRole = async (req: Request, res: Response) => {
   }
 };
 
+// Delete Role
 export const deleteRole = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;

@@ -2,13 +2,15 @@ import express from "express";
 import {
   createRole,
   deleteRole,
-  getRoles,
+  getAllRoles,
+  getRoleById,
   updateRole,
 } from "../controllers/RolesController";
 
 const RoleRoutes = express.Router();
 
-RoleRoutes.get("/role", getRoles);
+RoleRoutes.get("/role", getAllRoles);
+RoleRoutes.get("/role/:id", getRoleById);
 RoleRoutes.post("/role", createRole);
 RoleRoutes.post("/role/:id", updateRole);
 RoleRoutes.delete("/role/:id", deleteRole);
