@@ -14,27 +14,55 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const validatorjs_1 = __importDefault(require("validatorjs"));
 const Helper_1 = __importDefault(require("../../helper/Helper"));
+const User_1 = __importDefault(require("../../../models/User"));
 const RegisterValidation = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const { name, email, password, confirmPassword } = req.body;
-    const data = {
-        name,
-        email,
-        password,
-        confirmPassword,
-    };
-    const rules = {
-        name: "required|string|max:50",
-        email: "required|email",
-        password: "required|min:8",
-        confirmPassword: "required|same:password",
-    };
-    const validate = new validatorjs_1.default(data, rules);
-    if (validate.fails()) {
-        return res
-            .status(400)
-            .send(Helper_1.default.ResponseData(400, "Bad Request", validate.errors, null));
+    try {
+        // ambil data dari req body
+        const { name, email, password, confirmPassword } = req.body;
+        const data = {
+            name,
+            email,
+            password,
+            confirmPassword,
+        };
+        // buat rules untuk validasi
+        const rules = {
+            name: "required|string|max:50",
+            email: "required|email",
+            password: "required|min:8",
+            confirmPassword: "required|same:password",
+        };
+        // bandingkan data yang dikirim dengan rules
+        const validate = new validatorjs_1.default(data, rules);
+        // jika validasi gagal 
+        if (validate.fails()) {
+            return res
+                .status(400)
+                .send(Helper_1.default.ResponseData(400, "Bad Request", validate.errors, null));
+        }
+        // jika email sudah digunakan user lain
+        const user = yield User_1.default.findOne({
+            where: {
+                email: data.email,
+            },
+        });
+        if (user) {
+            const errorData = {
+                errors: {
+                    email: [
+                        "Email has already used"
+                    ]
+                }
+            };
+            return res
+                .status(500)
+                .send(Helper_1.default.ResponseData(400, "Bad Request", errorData, null));
+        }
+        next();
     }
-    next();
+    catch (error) {
+        return res.status(500).send(Helper_1.default.ResponseData(500, "", error, null));
+    }
 });
 exports.default = { RegisterValidation };
 //# sourceMappingURL=UserValidation.js.map
