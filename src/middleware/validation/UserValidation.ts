@@ -2,7 +2,7 @@ import Validator from "validatorjs";
 import { type Request, type Response, type NextFunction } from "express";
 import Helper from "../../helper/Helper";
 
-export const RegisterValidation = async (
+const RegisterValidation = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -32,3 +32,4 @@ export const RegisterValidation = async (
   next();
 };
 
+export default { RegisterValidation };

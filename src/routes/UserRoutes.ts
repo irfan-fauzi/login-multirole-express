@@ -1,9 +1,10 @@
 import express from "express";
 import { Register } from "../controllers/UserController";
-import { RegisterValidation } from "../middleware/validation/Validation";
+import UserValidation from "../middleware/validation/UserValidation";
+
 
 const UserRoute = express.Router();
 
-UserRoute.post("/register", RegisterValidation, Register);
+UserRoute.post("/register", UserValidation.RegisterValidation, Register);
 
 export default UserRoute;
