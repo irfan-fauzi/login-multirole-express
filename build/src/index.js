@@ -7,6 +7,7 @@ const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const cors_1 = __importDefault(require("cors"));
 const RolesRoutes_1 = __importDefault(require("./routes/RolesRoutes"));
+const UserRoutes_1 = __importDefault(require("./routes/UserRoutes"));
 const app = (0, express_1.default)();
 dotenv_1.default.config();
 const PORT = process.env.PORT;
@@ -22,6 +23,7 @@ app.get("/", (req, res) => {
     });
 });
 app.use(RolesRoutes_1.default);
+app.use(UserRoutes_1.default);
 app.listen(PORT, () => {
     console.log(`app running in port: ${PORT}`);
 });
