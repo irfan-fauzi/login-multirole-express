@@ -42,31 +42,31 @@ User.init(
     },
     name: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     email: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     roleId: {
       type: DataTypes.BIGINT,
-      allowNull: false,
+      allowNull: true,
     },
     password: {
       type: DataTypes.TEXT,
-      allowNull: false,
+      allowNull: true,
     },
     accessToken: {
       type: DataTypes.TEXT,
-      allowNull: false,
+      allowNull: true,
     },
     verified: {
       type: DataTypes.BOOLEAN,
-      allowNull: false,
+      allowNull: true,
     },
     active: {
       type: DataTypes.BOOLEAN,
-      allowNull: false,
+      allowNull: true,
     },
   },
   {
