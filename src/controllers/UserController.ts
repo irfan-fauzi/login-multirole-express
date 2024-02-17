@@ -76,7 +76,7 @@ export const UserLogin = async (req: Request, res: Response) => {
     const token = GenerateToken(dataUserWithoutToken);
     const refreshToken = GenerateRefreshToken(dataUserWithoutToken);
 
-    // 3. dapatkan data dengan tambahan generete token
+    // 3. dapatkan data dengan tambahan generete token baru
     const responseUserWithToken = {
       name: user.name,
       email: user.email,
@@ -105,21 +105,37 @@ export const UserLogin = async (req: Request, res: Response) => {
   }
 };
 
-export const RefreshToken = (req: Request, res: Response) => {
+export const RefreshToken = async (req: Request, res: Response) => {
   try {
-    const refreshToken = req.cookies?.refreshToken;
+    const refreshToken = req.cookies?.refreshToken // req.cookies?."refreshToken" di ambil dari nama 
+    
+    //  ------------------- jika refresh token tidak ada
+    
     if (!refreshToken) {
       return res
-        .status(201)
+        .status(401)
         .send(Helper.ResponseData(401, "Unauthorized", null, null));
     }
+
+    // refresh token 
     const decodedUser = ExtractRefreshToken(refreshToken);
+    console.log(decodedUser)
+     //  ------------------- jika refresh token tidak ada
     if (!decodedUser) {
       return res
         .status(201)
         .send(Helper.ResponseData(401, "Unauthorized", null, null));
     }
-    const token = GenerateToken(decodedUser);
+
+    // reformating value
+    const token = GenerateToken({
+      name: decodedUser.name,
+      email: decodedUser.email,
+      roleId: decodedUser.roleId,
+      verified: decodedUser.verified,
+      active: decodedUser.active,
+    });
+    
     const user = {
       name: decodedUser.name,
       email: decodedUser.email,
@@ -128,7 +144,8 @@ export const RefreshToken = (req: Request, res: Response) => {
       active: decodedUser.active,
       token: token,
     };
-
+    
+    
     return res.status(200).send(Helper.ResponseData(200, "OK", null, user));
   } catch (error) {
     return res.status(500).send(Helper.ResponseData(500, "", error, null));

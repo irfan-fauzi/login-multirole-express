@@ -10,12 +10,17 @@ export const Authenticated = (
   try {
     const authToken = req.headers["authorization"];
     const token = authToken && authToken.split(" ")[1];
-    if (!token) {
+    if (token === null) {
       return res
         .status(401)
-        .send(Helper.ResponseData(401, "unauthorized", null, null));
+        .send(Helper.ResponseData(401, "unAuthorized", null, null));
     }
     const result = ExtractToken(token!);
+    if (result === null) {
+      return res
+        .status(401)
+        .send(Helper.ResponseData(401, "UnAuthorized time out", null, null));
+    }
     next();
   } catch (error) {
     return res
