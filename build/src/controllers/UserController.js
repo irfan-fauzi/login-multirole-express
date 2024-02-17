@@ -12,11 +12,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Register = void 0;
+exports.RefreshToken = exports.UserLogin = exports.UserRegister = void 0;
 const User_1 = __importDefault(require("../../models/User"));
-const Helper_1 = __importDefault(require("../helper/Helper"));
+const ResponseData_1 = __importDefault(require("../helper/ResponseData"));
 const PasswordHelper_1 = __importDefault(require("../helper/PasswordHelper"));
-const Register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const GenerateToken_1 = require("../helper/GenerateToken");
+const UserRegister = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { name, email, password, confirmPassword } = req.body;
         const hashPassword = yield PasswordHelper_1.default.PasswordHashing(password);
@@ -30,11 +31,116 @@ const Register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
         return res
             .status(201)
-            .send(Helper_1.default.ResponseData(201, "Created", null, user));
+            .send(ResponseData_1.default.ResponseData(201, "Created", null, user));
     }
     catch (error) {
-        return res.status(500).send(Helper_1.default.ResponseData(500, "", error, null));
+        return res.status(500).send(ResponseData_1.default.ResponseData(500, "", error, null));
     }
 });
-exports.Register = Register;
+exports.UserRegister = UserRegister;
+const UserLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        // ambil email dan password dari user
+        const { email, password } = req.body;
+        // cari email yang dimasukan user apakah ada yang sama dengan di database
+        const user = yield User_1.default.findOne({
+            where: {
+                email: email,
+            },
+        });
+        // catatan: jika email tidak ada jangan pernah kasih respon "email tidak ditemukan, karena user bisa saja pakai email lain / potensi hack akun"
+        if (!user) {
+            // better kasih respon unauthorized
+            return res
+                .status(401)
+                .send(ResponseData_1.default.ResponseData(401, "Unauthorized", null, null));
+        }
+        //  next step => komparasi password yang user input dengan password di database
+        const matched = yield PasswordHelper_1.default.PasswordCompare(password, user.password);
+        // jika tidak cocok antara input dari user dengan password database
+        if (!matched) {
+            return res
+                .status(401)
+                .send(ResponseData_1.default.ResponseData(401, "Unauthorized", null, null));
+        }
+        // generate Token dari JWT for secure
+        // 1. inisialisasi data yang akan di generate
+        const dataUserWithoutToken = {
+            name: user.name,
+            email: user.email,
+            roleId: user.roleId,
+            verified: user.verified,
+            active: user.active,
+        };
+        // 2.generate token
+        const token = (0, GenerateToken_1.GenerateToken)(dataUserWithoutToken);
+        const refreshToken = (0, GenerateToken_1.GenerateRefreshToken)(dataUserWithoutToken);
+        // 3. dapatkan data dengan tambahan generete token baru
+        const responseUserWithToken = {
+            name: user.name,
+            email: user.email,
+            roleId: user.roleId,
+            verified: user.verified,
+            active: user.active,
+            token: token,
+        };
+        // 4. update isi value tabel database user yang berisi refreshtoken
+        user.accessToken = refreshToken;
+        yield user.save();
+        // 5. kirim refresh token ke use cookie
+        // note: "resfresh" token hanya nama yang menyesuaikan konteks
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            maxAge: 24 * 60 * 60 * 1000, // kalkulasi 1 hari dalam milisecond
+        });
+        return res
+            .status(200)
+            .send(ResponseData_1.default.ResponseData(200, "OK", null, responseUserWithToken));
+    }
+    catch (error) {
+        return res.status(500).send(ResponseData_1.default.ResponseData(500, "", error, null));
+    }
+});
+exports.UserLogin = UserLogin;
+const RefreshToken = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    try {
+        const refreshToken = (_a = req.cookies) === null || _a === void 0 ? void 0 : _a.refreshToken; // req.cookies?."refreshToken" di ambil dari nama 
+        //  ------------------- jika refresh token tidak ada
+        if (!refreshToken) {
+            return res
+                .status(401)
+                .send(ResponseData_1.default.ResponseData(401, "Unauthorized", null, null));
+        }
+        // refresh token 
+        const decodedUser = (0, GenerateToken_1.ExtractRefreshToken)(refreshToken);
+        console.log(decodedUser);
+        //  ------------------- jika refresh token tidak ada
+        if (!decodedUser) {
+            return res
+                .status(201)
+                .send(ResponseData_1.default.ResponseData(401, "Unauthorized", null, null));
+        }
+        const token = (0, GenerateToken_1.GenerateToken)({
+            name: decodedUser.name,
+            email: decodedUser.email,
+            roleId: decodedUser.roleId,
+            verified: decodedUser.verified,
+            active: decodedUser.active,
+        });
+        const user = {
+            name: decodedUser.name,
+            email: decodedUser.email,
+            roleId: decodedUser.roleId,
+            verified: decodedUser.verified,
+            active: decodedUser.active,
+            token: token,
+        };
+        return res.status(200).send(ResponseData_1.default.ResponseData(200, "OK", null, user));
+    }
+    catch (error) {
+        return res.status(500).send(ResponseData_1.default.ResponseData(500, "", error, null));
+    }
+});
+exports.RefreshToken = RefreshToken;
 //# sourceMappingURL=UserController.js.map

@@ -15,11 +15,11 @@ Role.init({
         type: sequelize_1.DataTypes.BIGINT,
     },
     roleName: {
-        allowNull: true,
+        allowNull: false,
         type: sequelize_1.DataTypes.STRING,
     },
     active: {
-        allowNull: true,
+        allowNull: false,
         type: sequelize_1.DataTypes.BOOLEAN,
     },
 }, {

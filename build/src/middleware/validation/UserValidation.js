@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const validatorjs_1 = __importDefault(require("validatorjs"));
-const Helper_1 = __importDefault(require("../../helper/Helper"));
+const ResponseData_1 = __importDefault(require("../../helper/ResponseData"));
 const User_1 = __importDefault(require("../../../models/User"));
 const RegisterValidation = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -34,11 +34,11 @@ const RegisterValidation = (req, res, next) => __awaiter(void 0, void 0, void 0,
         };
         // bandingkan data yang dikirim dengan rules
         const validate = new validatorjs_1.default(data, rules);
-        // jika validasi gagal 
+        // jika validasi gagal
         if (validate.fails()) {
             return res
                 .status(400)
-                .send(Helper_1.default.ResponseData(400, "Bad Request", validate.errors, null));
+                .send(ResponseData_1.default.ResponseData(400, "Bad Request", validate.errors, null));
         }
         // jika email sudah digunakan user lain
         const user = yield User_1.default.findOne({
@@ -49,19 +49,17 @@ const RegisterValidation = (req, res, next) => __awaiter(void 0, void 0, void 0,
         if (user) {
             const errorData = {
                 errors: {
-                    email: [
-                        "Email has already used"
-                    ]
-                }
+                    email: ["Email has already used"],
+                },
             };
             return res
                 .status(500)
-                .send(Helper_1.default.ResponseData(400, "Bad Request", errorData, null));
+                .send(ResponseData_1.default.ResponseData(400, "Bad Request", errorData, null));
         }
         next();
     }
     catch (error) {
-        return res.status(500).send(Helper_1.default.ResponseData(500, "", error, null));
+        return res.status(500).send(ResponseData_1.default.ResponseData(500, "", error, null));
     }
 });
 exports.default = { RegisterValidation };

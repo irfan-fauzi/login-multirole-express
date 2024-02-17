@@ -119,7 +119,7 @@ export const RefreshToken = async (req: Request, res: Response) => {
 
     // refresh token 
     const decodedUser = ExtractRefreshToken(refreshToken);
-    console.log(decodedUser)
+    
      //  ------------------- jika refresh token tidak ada
     if (!decodedUser) {
       return res
@@ -127,7 +127,7 @@ export const RefreshToken = async (req: Request, res: Response) => {
         .send(Helper.ResponseData(401, "Unauthorized", null, null));
     }
 
-    // reformating value
+    
     const token = GenerateToken({
       name: decodedUser.name,
       email: decodedUser.email,
@@ -135,7 +135,8 @@ export const RefreshToken = async (req: Request, res: Response) => {
       verified: decodedUser.verified,
       active: decodedUser.active,
     });
-    
+
+  
     const user = {
       name: decodedUser.name,
       email: decodedUser.email,
