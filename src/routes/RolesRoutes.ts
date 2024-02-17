@@ -6,10 +6,11 @@ import {
   getRoleById,
   updateRole,
 } from "../controllers/RolesController";
+import { Authenticated } from "../middleware/Auth";
 
 const RoleRoutes = express.Router();
 
-RoleRoutes.get("/role", getAllRoles);
+RoleRoutes.get("/role", Authenticated, getAllRoles);
 RoleRoutes.get("/role/:id", getRoleById);
 RoleRoutes.post("/role", createRole);
 RoleRoutes.post("/role/:id", updateRole);

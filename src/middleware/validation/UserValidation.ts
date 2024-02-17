@@ -1,6 +1,6 @@
 import Validator from "validatorjs";
 import { type Request, type Response, type NextFunction } from "express";
-import Helper from "../../helper/Helper";
+import Helper from "../../helper/ResponseData";
 import User from "../../../models/User";
 
 const RegisterValidation = async (
@@ -28,7 +28,7 @@ const RegisterValidation = async (
 
     // bandingkan data yang dikirim dengan rules
     const validate = new Validator(data, rules);
-    // jika validasi gagal 
+    // jika validasi gagal
     if (validate.fails()) {
       return res
         .status(400)
@@ -45,21 +45,12 @@ const RegisterValidation = async (
     if (user) {
       const errorData = {
         errors: {
-          email: [
-            "Email has already used"
-          ]
-        }
-      }
+          email: ["Email has already used"],
+        },
+      };
       return res
         .status(500)
-        .send(
-          Helper.ResponseData(
-            400,
-            "Bad Request",
-            errorData,
-            null
-          )
-        );
+        .send(Helper.ResponseData(400, "Bad Request", errorData, null));
     }
 
     next();

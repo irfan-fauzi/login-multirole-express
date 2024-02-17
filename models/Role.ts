@@ -31,11 +31,11 @@ Role.init(
       type: DataTypes.BIGINT,
     },
     roleName: {
-      allowNull: true,
+      allowNull: false,
       type: DataTypes.STRING,
     },
     active: {
-      allowNull: true,
+      allowNull: false,
       type: DataTypes.BOOLEAN,
     },
   },

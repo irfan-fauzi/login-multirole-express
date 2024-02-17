@@ -1,7 +1,12 @@
 import { type Request, type Response } from "express";
 import User from "../../models/User";
-import Helper from "../helper/Helper";
+import Helper from "../helper/ResponseData";
 import PasswordHelper from "../helper/PasswordHelper";
+import {
+  ExtractRefreshToken,
+  GenerateRefreshToken,
+  GenerateToken,
+} from "../helper/GenerateToken";
 
 export const UserRegister = async (req: Request, res: Response) => {
   try {
@@ -51,14 +56,80 @@ export const UserLogin = async (req: Request, res: Response) => {
     );
 
     // jika tidak cocok antara input dari user dengan password database
-    if(!matched){
+    if (!matched) {
       return res
         .status(401)
         .send(Helper.ResponseData(401, "Unauthorized", null, null));
     }
 
-    return res.status(201).send(Helper.ResponseData(500, `welcome ${user.name} you're Login 😃`, null, user));
+    // generate Token dari JWT for secure
 
+    // 1. inisialisasi data yang akan di generate
+    const dataUserWithoutToken = {
+      name: user.name,
+      email: user.email,
+      roleId: user.roleId,
+      verified: user.verified,
+      active: user.active,
+    };
+    // 2.generate token
+    const token = GenerateToken(dataUserWithoutToken);
+    const refreshToken = GenerateRefreshToken(dataUserWithoutToken);
+
+    // 3. dapatkan data dengan tambahan generete token
+    const responseUserWithToken = {
+      name: user.name,
+      email: user.email,
+      roleId: user.roleId,
+      verified: user.verified,
+      active: user.active,
+      token: token,
+    };
+
+    // 4. update isi value tabel database user yang berisi refreshtoken
+    user.accessToken = refreshToken;
+    await user.save();
+
+    // 5. kirim refresh token ke use cookie
+    // note: "resfresh" token hanya nama yang menyesuaikan konteks
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000, // kalkulasi 1 hari dalam milisecond
+    });
+
+    return res
+      .status(200)
+      .send(Helper.ResponseData(200, "OK", null, responseUserWithToken));
+  } catch (error) {
+    return res.status(500).send(Helper.ResponseData(500, "", error, null));
+  }
+};
+
+export const RefreshToken = (req: Request, res: Response) => {
+  try {
+    const refreshToken = req.cookies?.refreshToken;
+    if (!refreshToken) {
+      return res
+        .status(201)
+        .send(Helper.ResponseData(401, "Unauthorized", null, null));
+    }
+    const decodedUser = ExtractRefreshToken(refreshToken);
+    if (!decodedUser) {
+      return res
+        .status(201)
+        .send(Helper.ResponseData(401, "Unauthorized", null, null));
+    }
+    const token = GenerateToken(decodedUser);
+    const user = {
+      name: decodedUser.name,
+      email: decodedUser.email,
+      roleId: decodedUser.roleId,
+      verified: decodedUser.verified,
+      active: decodedUser.active,
+      token: token,
+    };
+
+    return res.status(200).send(Helper.ResponseData(200, "OK", null, user));
   } catch (error) {
     return res.status(500).send(Helper.ResponseData(500, "", error, null));
   }

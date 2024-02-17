@@ -1,10 +1,11 @@
 import express from "express";
-import { UserRegister, UserLogin } from "../controllers/UserController";
+import { UserRegister, UserLogin, RefreshToken } from "../controllers/UserController";
 import UserValidation from "../middleware/validation/UserValidation";
 
 const UserRoute = express.Router();
 
-UserRoute.post("/register", UserValidation.RegisterValidation, UserRegister);
-UserRoute.post("/login", UserLogin);
+UserRoute.post("/user/register", UserValidation.RegisterValidation, UserRegister);
+UserRoute.post("/user/login", UserLogin);
+UserRoute.get("/user/refresh-token", RefreshToken)
 
 export default UserRoute;
