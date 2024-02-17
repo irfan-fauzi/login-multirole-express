@@ -114,7 +114,7 @@ const RefreshToken = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         }
         // refresh token 
         const decodedUser = (0, GenerateToken_1.ExtractRefreshToken)(refreshToken);
-        console.log(decodedUser);
+        
         //  ------------------- jika refresh token tidak ada
         if (!decodedUser) {
             return res
