@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_1 = require("sequelize");
 const dbConnect_1 = __importDefault(require("../config/dbConnect"));
+const Role_1 = __importDefault(require("./Role"));
 class User extends sequelize_1.Model {
 }
 User.init({
@@ -47,5 +48,7 @@ User.init({
     sequelize: dbConnect_1.default,
     underscored: false,
 });
+// jadi setiap user yang punya roleID akan dihunungkan ke tabel role
+User.belongsTo(Role_1.default, { foreignKey: "roleId" });
 exports.default = User;
 //# sourceMappingURL=User.js.map

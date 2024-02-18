@@ -17,13 +17,11 @@ const Role_1 = __importDefault(require("../../models/Role"));
 // get All Roles
 const getAllRoles = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        // const response = await Role.findAll({
-        //   where: {
-        //     active: true, // show only status active
-        //   },
-        // });
+        // 
+        const thisUserEmail = res.locals.email;
         const response = yield Role_1.default.findAll();
         return res.status(200).send({
+            thisUser: thisUserEmail,
             status: 200,
             message: "👍 OKE",
             data: response,

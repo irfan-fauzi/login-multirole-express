@@ -9,7 +9,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const GenerateToken = (data) => {
     const token = jsonwebtoken_1.default.sign(data, process.env.JWT_TOKEN, {
-        expiresIn: "30s",
+        expiresIn: "60m",
     });
     return token;
 };
