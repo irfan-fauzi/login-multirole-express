@@ -166,14 +166,56 @@ export const UserDetail = async (req: Request, res: Response) => {
         .send(Helper.ResponseData(404, "Not found", null, null));
     }
 
-
     // bisa juga dikosongkan password dan tokennya untuk keamanan
-    user.password = ""
-    user.accessToken = ""
-    
+    user.password = "";
+    user.accessToken = "";
+
+    return res.status(500).send(Helper.ResponseData(200, "", null, user));
+  } catch (error) {
+    return res.status(500).send(Helper.ResponseData(500, "", error, null));
+  }
+};
+
+export const UserLogout = async (req: Request, res: Response) => {
+  try {
+    //
+    const email = res.locals.email;
+    const refreshToken = req.cookies?.refreshToken;
+    // jika refresh token di cookie tidak ada
+    if (!refreshToken) {
+      // ya pasti sudah logout
+      return res
+        .status(200)
+        .send(Helper.ResponseData(200, "User Logout", null, null));
+    }
+    const user = await User.findOne({
+      where: {
+        email: email,
+      },
+    });
+
+    // jika user tidak ditemukan (bisa karena token nya sudah kadaluarsa)
+    if (!user) {
+      // maka bisa kita langsung hapus saja cookeis nya
+      res.clearCookie("refreshToken");
+      return res
+        .status(200)
+        .send(Helper.ResponseData(200, "User Logout", null, null));
+    }
+    // jika user ditemukan, maka update personal akses tokennya dibuang di database
+    await User.update(
+      { accessToken: null },
+      {
+        where: {
+          email: email,
+        },
+      }
+    );
+    // setelah itu hapus refresh tokennya di cookie
+    res.clearCookie("refreshToken");
     return res
-      .status(500)
-      .send(Helper.ResponseData(200, "", null, user));
+      .status(200)
+      .send(Helper.ResponseData(200, "User Logout", null, null));
   } catch (error) {
     return res.status(500).send(Helper.ResponseData(500, "", error, null));
   }

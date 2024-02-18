@@ -4,6 +4,7 @@ import {
   UserLogin,
   RefreshToken,
   UserDetail,
+  UserLogout,
 } from "../controllers/UserController";
 import UserValidation from "../middleware/validation/UserValidation";
 import { Authenticated } from "../middleware/Auth";
@@ -18,5 +19,6 @@ UserRoute.post(
 UserRoute.post("/user/login", UserLogin);
 UserRoute.get("/user/refresh-token", RefreshToken);
 UserRoute.get("/user/current-user", Authenticated, UserDetail);
+UserRoute.get("/user/logout", Authenticated, UserLogout)
 
 export default UserRoute;
