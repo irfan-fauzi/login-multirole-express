@@ -7,10 +7,11 @@ import {
   GenerateRefreshToken,
   GenerateToken,
 } from "../helper/GenerateToken";
+import Role from "../../models/Role";
 
 export const UserRegister = async (req: Request, res: Response) => {
   try {
-    const { name, email, password, confirmPassword, active } = req.body;
+    const { name, email, password, confirmPassword, active, roleId } = req.body;
     const hashPassword = await PasswordHelper.PasswordHashing(password);
 
     const user = await User.create({
@@ -19,7 +20,7 @@ export const UserRegister = async (req: Request, res: Response) => {
       password: hashPassword,
       active: active,
       verified: true,
-      roleId: 1,
+      roleId: roleId,
     });
     return res
       .status(201)
@@ -159,6 +160,10 @@ export const UserDetail = async (req: Request, res: Response) => {
       where: {
         email: email,
       },
+      include: {
+        model: Role,
+        attributes: ["id", "roleName"]
+      }
     });
     if (!user) {
       return res

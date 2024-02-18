@@ -1,5 +1,6 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import dbConnect from "../config/dbConnect";
+import Role from "./Role";
 
 interface UserAttribute {
   id?: number;
@@ -75,5 +76,8 @@ User.init(
     underscored: false,
   }
 );
+
+// jadi setiap user yang punya roleID akan dihunungkan ke tabel role
+User.belongsTo(Role, { foreignKey: "roleId" });
 
 export default User;
