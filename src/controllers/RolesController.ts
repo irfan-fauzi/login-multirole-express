@@ -4,13 +4,11 @@ import Role from "../../models/Role";
 // get All Roles
 export const getAllRoles = async (req: Request, res: Response) => {
   try {
-    // const response = await Role.findAll({
-    //   where: {
-    //     active: true, // show only status active
-    //   },
-    // });
+    // 
+    const thisUserEmail = res.locals.email
     const response = await Role.findAll();
     return res.status(200).send({
+      thisUser: thisUserEmail,
       status: 200,
       message: "👍 OKE",
       data: response,

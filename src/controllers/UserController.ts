@@ -10,14 +10,14 @@ import {
 
 export const UserRegister = async (req: Request, res: Response) => {
   try {
-    const { name, email, password, confirmPassword } = req.body;
+    const { name, email, password, confirmPassword, active } = req.body;
     const hashPassword = await PasswordHelper.PasswordHashing(password);
 
     const user = await User.create({
       name,
       email,
       password: hashPassword,
-      active: true,
+      active: active,
       verified: true,
       roleId: 1,
     });
@@ -107,27 +107,26 @@ export const UserLogin = async (req: Request, res: Response) => {
 
 export const RefreshToken = async (req: Request, res: Response) => {
   try {
-    const refreshToken = req.cookies?.refreshToken // req.cookies?."refreshToken" di ambil dari nama 
-    
+    const refreshToken = req.cookies?.refreshToken; // req.cookies?."refreshToken" di ambil dari nama
+
     //  ------------------- jika refresh token tidak ada
-    
+
     if (!refreshToken) {
       return res
         .status(401)
         .send(Helper.ResponseData(401, "Unauthorized", null, null));
     }
 
-    // refresh token 
+    // refresh token
     const decodedUser = ExtractRefreshToken(refreshToken);
-    
-     //  ------------------- jika refresh token tidak ada
+
+    //  ------------------- jika refresh token tidak ada
     if (!decodedUser) {
       return res
         .status(201)
         .send(Helper.ResponseData(401, "Unauthorized", null, null));
     }
 
-    
     const token = GenerateToken({
       name: decodedUser.name,
       email: decodedUser.email,
@@ -136,7 +135,6 @@ export const RefreshToken = async (req: Request, res: Response) => {
       active: decodedUser.active,
     });
 
-  
     const user = {
       name: decodedUser.name,
       email: decodedUser.email,
@@ -145,9 +143,37 @@ export const RefreshToken = async (req: Request, res: Response) => {
       active: decodedUser.active,
       token: token,
     };
-    
-    
+
     return res.status(200).send(Helper.ResponseData(200, "OK", null, user));
+  } catch (error) {
+    return res.status(500).send(Helper.ResponseData(500, "", error, null));
+  }
+};
+
+export const UserDetail = async (req: Request, res: Response) => {
+  try {
+    // ambil email dari res.local (dari file Auth.ts) di middleware
+    const email = res.locals.email;
+    // cari email apakah ada yang sama dengan di database
+    const user = await User.findOne({
+      where: {
+        email: email,
+      },
+    });
+    if (!user) {
+      return res
+        .status(500)
+        .send(Helper.ResponseData(404, "Not found", null, null));
+    }
+
+
+    // bisa juga dikosongkan password dan tokennya untuk keamanan
+    user.password = ""
+    user.accessToken = ""
+    
+    return res
+      .status(500)
+      .send(Helper.ResponseData(200, "", null, user));
   } catch (error) {
     return res.status(500).send(Helper.ResponseData(500, "", error, null));
   }

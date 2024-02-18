@@ -12,7 +12,7 @@ interface UserData {
 
 export const GenerateToken = (data: any): string => {
   const token = jwt.sign(data, process.env.JWT_TOKEN as string, {
-    expiresIn: "30s",
+    expiresIn: "60m",
   });
   return token;
 };
