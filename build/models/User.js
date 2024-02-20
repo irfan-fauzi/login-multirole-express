@@ -50,5 +50,6 @@ User.init({
 });
 // jadi setiap user yang punya roleID akan dihunungkan ke tabel role
 User.belongsTo(Role_1.default, { foreignKey: "roleId" });
+// di include di userDetail di controller
 exports.default = User;
 //# sourceMappingURL=User.js.map

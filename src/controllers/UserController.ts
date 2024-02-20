@@ -198,7 +198,7 @@ export const UserLogout = async (req: Request, res: Response) => {
         email: email,
       },
     });
-    console.log(user)
+    
     // jika user tidak ditemukan (bisa karena token nya sudah kadaluarsa)
     if (!user) {
       // maka bisa kita langsung hapus saja cookeis nya

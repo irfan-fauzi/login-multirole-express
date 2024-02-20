@@ -7,12 +7,12 @@ import {
   updateRole,
 } from "../controllers/RolesController";
 import { Authenticated } from "../middleware/Authenticated";
-import { ManagerRole} from "../middleware/Authorization"
+import { BasicUser, ManagerRole} from "../middleware/Authorization"
 
 const RoleRoutes = express.Router();
 
-RoleRoutes.get("/role", Authenticated, getAllRoles);
-RoleRoutes.get("/role/:id", getRoleById);
+RoleRoutes.get("/role", Authenticated, BasicUser, getAllRoles);
+RoleRoutes.get("/role/:id", BasicUser, getRoleById);
 
 RoleRoutes.post("/role",Authenticated, ManagerRole, createRole);
 RoleRoutes.post("/role/:id", Authenticated, ManagerRole, updateRole);
