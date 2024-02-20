@@ -6,14 +6,16 @@ import {
   getRoleById,
   updateRole,
 } from "../controllers/RolesController";
-import { Authenticated } from "../middleware/Auth";
+import { Authenticated } from "../middleware/Authenticated";
+import { ManagerRole} from "../middleware/Authorization"
 
 const RoleRoutes = express.Router();
 
 RoleRoutes.get("/role", Authenticated, getAllRoles);
 RoleRoutes.get("/role/:id", getRoleById);
-RoleRoutes.post("/role", createRole);
-RoleRoutes.post("/role/:id", updateRole);
-RoleRoutes.delete("/role/:id", deleteRole);
+
+RoleRoutes.post("/role",Authenticated, ManagerRole, createRole);
+RoleRoutes.post("/role/:id", Authenticated, ManagerRole, updateRole);
+RoleRoutes.delete("/role/:id",Authenticated, ManagerRole, deleteRole);
 
 export default RoleRoutes;

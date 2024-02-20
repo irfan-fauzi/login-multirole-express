@@ -7,7 +7,7 @@ import {
   UserLogout,
 } from "../controllers/UserController";
 import UserValidation from "../middleware/validation/UserValidation";
-import { Authenticated } from "../middleware/Auth";
+import { Authenticated } from "../middleware/Authenticated";
 
 const UserRoute = express.Router();
 
@@ -19,6 +19,6 @@ UserRoute.post(
 UserRoute.post("/user/login", UserLogin);
 UserRoute.get("/user/refresh-token", RefreshToken);
 UserRoute.get("/user/current-user", Authenticated, UserDetail);
-UserRoute.get("/user/logout", Authenticated, UserLogout)
+UserRoute.get("/user/logout", Authenticated, UserLogout);
 
 export default UserRoute;

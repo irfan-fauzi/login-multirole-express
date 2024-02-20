@@ -23,7 +23,7 @@ export const Authenticated = (
     // extrackt token baru menggantikan token lama
     // extract token sudah di atur setiap 20 detik maka akan ganti dengan token baru
     const result = ExtractToken(token!);
-    
+
     // jika null artinya token sudah kadaluarsa
     if (result === null) {
       // maka waktu akses habis
@@ -34,10 +34,10 @@ export const Authenticated = (
 
     //  NOTE -------kirim data email user yang sudah di ekstraxt setelah login ke variable res.local
     // NOTE ------ yang selanjutnya bisa di akses di controller / middleware selanjutnya
-    res.locals.email = result?.email
-    
+    res.locals.email = result?.email;
+    res.locals.roleId = result?.roleId;
     // jika token berhasil diperbarui maka akan lanjut menjalankan controller di user Controller
-    next()
+    next();
   } catch (error) {
     return res
       .status(500)
