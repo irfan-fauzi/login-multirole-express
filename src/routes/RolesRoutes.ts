@@ -11,8 +11,8 @@ import { BasicUser, ManagerRole} from "../middleware/Authorization"
 
 const RoleRoutes = express.Router();
 
-RoleRoutes.get("/role", Authenticated, BasicUser, getAllRoles);
-RoleRoutes.get("/role/:id", BasicUser, getRoleById);
+RoleRoutes.get("/role", Authenticated, getAllRoles);
+RoleRoutes.get("/role/:id", getRoleById);
 
 RoleRoutes.post("/role",Authenticated, ManagerRole, createRole);
 RoleRoutes.post("/role/:id", Authenticated, ManagerRole, updateRole);
