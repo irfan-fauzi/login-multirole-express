@@ -26,7 +26,7 @@ const Authenticated = (req, res, next) => {
             // maka waktu akses habis
             return res
                 .status(401)
-                .send(ResponseData_1.default.ResponseData(401, "UnAuthorized time out", null, null));
+                .send(ResponseData_1.default.ResponseData(401, "UnAuthorized", null, null));
         }
         //  NOTE -------kirim data email user yang sudah di ekstraxt setelah login ke variable res.local
         // NOTE ------ yang selanjutnya bisa di akses di controller / middleware selanjutnya

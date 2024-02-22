@@ -20,13 +20,13 @@ const GenerateToken_1 = require("../helper/GenerateToken");
 const Role_1 = __importDefault(require("../../models/Role"));
 const UserRegister = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { name, email, password, confirmPassword, active, roleId } = req.body;
+        const { name, email, password, confirmPassword, roleId } = req.body;
         const hashPassword = yield PasswordHelper_1.default.PasswordHashing(password);
         const user = yield User_1.default.create({
             name,
             email,
             password: hashPassword,
-            active: active,
+            active: true,
             verified: true,
             roleId: roleId,
         });
