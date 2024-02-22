@@ -29,7 +29,7 @@ export const Authenticated = (
       // maka waktu akses habis
       return res
         .status(401)
-        .send(Helper.ResponseData(401, "UnAuthorized time out", null, null));
+        .send(Helper.ResponseData(401, "UnAuthorized", null, null));
     }
 
     //  NOTE -------kirim data email user yang sudah di ekstraxt setelah login ke variable res.local

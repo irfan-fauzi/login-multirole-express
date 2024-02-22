@@ -8,13 +8,14 @@ import cors from "cors";
 import RoleRoutes from "./routes/RolesRoutes";
 import UserRoute from "./routes/UserRoutes";
 import cookieParser from "cookie-parser";
+import MasterMenuRoutes from "./routes/MasterMenuRoutes";
 
 const app: Application = express();
 
 dotenv.config();
 const PORT = process.env.PORT;
 app.use(express.json());
-app.use(cookieParser())
+app.use(cookieParser());
 
 app.use(
   cors({
@@ -32,6 +33,7 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use(RoleRoutes);
 app.use(UserRoute);
+app.use(MasterMenuRoutes);
 
 app.listen(PORT, () => {
   console.log(`app running in port: ${PORT}`);
