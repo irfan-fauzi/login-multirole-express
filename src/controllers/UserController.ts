@@ -11,14 +11,14 @@ import Role from "../../models/Role";
 
 export const UserRegister = async (req: Request, res: Response) => {
   try {
-    const { name, email, password, confirmPassword, active, roleId } = req.body;
+    const { name, email, password, confirmPassword, roleId } = req.body;
     const hashPassword = await PasswordHelper.PasswordHashing(password);
 
     const user = await User.create({
       name,
       email,
       password: hashPassword,
-      active: active,
+      active: true,
       verified: true,
       roleId: roleId,
     });
