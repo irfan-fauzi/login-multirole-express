@@ -9,6 +9,7 @@ import RoleRoutes from "./routes/RolesRoutes";
 import UserRoute from "./routes/UserRoutes";
 import cookieParser from "cookie-parser";
 import MasterMenuRoutes from "./routes/MasterMenuRoutes";
+import SubMenuRouter from "./routes/SubMenuRoutes";
 
 const app: Application = express();
 
@@ -34,6 +35,7 @@ app.get("/", (req: Request, res: Response) => {
 app.use(RoleRoutes);
 app.use(UserRoute);
 app.use(MasterMenuRoutes);
+app.use(SubMenuRouter)
 
 app.listen(PORT, () => {
   console.log(`app running in port: ${PORT}`);

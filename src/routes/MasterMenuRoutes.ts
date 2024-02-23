@@ -6,12 +6,27 @@ import MenuValidation from "../middleware/validation/MenuValidation";
 
 const MasterMenuRoutes = express.Router();
 
-MasterMenuRoutes.get("/menu/all", Authenticated, GetAllMenu);
+// GET ALL
+MasterMenuRoutes.get("/menu/get/all", Authenticated, GetAllMenu);
+
+// GET ONLY ACTIVE
 MasterMenuRoutes.get("/menu", Authenticated, GetListMenu);
+// ----------------------------------------------------------------
+
+// GET DETAIL ONE
 MasterMenuRoutes.get("/menu/:id", Authenticated, GetDetailMenu);
+// ----------------------------------------------------------------
+
+// CREATE
 MasterMenuRoutes.post("/menu", MenuValidation.CreateMenuValidation, Authenticated, AdminRole, CreateMenu);
+
+// UPDATE
 MasterMenuRoutes.patch("/menu/:id",MenuValidation.CreateMenuValidation, Authenticated, AdminRole, UpdateMenu);
+
+// SOFT DELETE
 MasterMenuRoutes.delete("/menu/:id", Authenticated, AdminRole, SoftDeleteMenu);
+
+// DELETE PERMANENT
 MasterMenuRoutes.delete("/menu/destroy/:id", Authenticated, ManagerRole, DeletePermanentMenu);
 
 export default MasterMenuRoutes;

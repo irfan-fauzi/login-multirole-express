@@ -17,7 +17,7 @@ interface SubMenuAttribute {
 }
 
 export interface SubMenuInput extends Optional<SubMenuAttribute, "id">{ }
-export interface MasterMenuOutput extends Required<SubMenuAttribute>{ }
+export interface SubMenuOutput extends Required<SubMenuAttribute>{ }
 
 class SubMenu extends Model<SubMenuAttribute, SubMenuInput> implements SubMenuAttribute {
   public id!: number;
