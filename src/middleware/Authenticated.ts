@@ -12,7 +12,6 @@ export const Authenticated = (
     const authToken = req.headers["authorization"];
     // karena token valuenya "Bearer[spasi]isitoken" maka ambil yang index ke 2 yaitu token tsb
     const token = authToken && authToken.split(" ")[1];
-
     // jika token kosong maka unauthorized
     if (token === null) {
       return res
