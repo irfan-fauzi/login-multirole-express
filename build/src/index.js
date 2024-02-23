@@ -10,6 +10,7 @@ const RolesRoutes_1 = __importDefault(require("./routes/RolesRoutes"));
 const UserRoutes_1 = __importDefault(require("./routes/UserRoutes"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const MasterMenuRoutes_1 = __importDefault(require("./routes/MasterMenuRoutes"));
+const SubMenuRoutes_1 = __importDefault(require("./routes/SubMenuRoutes"));
 const app = (0, express_1.default)();
 dotenv_1.default.config();
 const PORT = process.env.PORT;
@@ -28,6 +29,7 @@ app.get("/", (req, res) => {
 app.use(RolesRoutes_1.default);
 app.use(UserRoutes_1.default);
 app.use(MasterMenuRoutes_1.default);
+app.use(SubMenuRoutes_1.default);
 app.listen(PORT, () => {
     console.log(`app running in port: ${PORT}`);
 });

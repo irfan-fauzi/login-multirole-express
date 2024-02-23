@@ -2,7 +2,7 @@ import Validator from "validatorjs";
 import { type Request, type Response, type NextFunction } from "express";
 import Helper from "../../helper/ResponseData";
 import MasterMenu from "../../../models/MasterMenu";
-import SubMenu from "../../../models/SubMenu";
+
 
 const CreateMenuValidation = async (
   req: Request,
