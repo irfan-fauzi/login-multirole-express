@@ -18,6 +18,7 @@ const SubMenuRouter = express.Router();
 SubMenuRouter.get(
   "/submenu/get/all", 
   Authenticated, 
+  ManagerRole,
   GetAllSubMenu
 );
 
@@ -47,7 +48,7 @@ SubMenuRouter.get(
 // UPDATE
 SubMenuRouter.patch(
   "/submenu/:id",
-  // MenuValidation.CreateSubMenuValidation,
+  MenuValidation.CreateSubMenuValidation,
   Authenticated,
   AdminRole,
   UpdateSubMenu

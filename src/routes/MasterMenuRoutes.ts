@@ -7,7 +7,7 @@ import MenuValidation from "../middleware/validation/MenuValidation";
 const MasterMenuRoutes = express.Router();
 
 // GET ALL
-MasterMenuRoutes.get("/menu/get/all", Authenticated, GetAllMenu);
+MasterMenuRoutes.get("/menu/get/all", Authenticated, ManagerRole, GetAllMenu);
 
 // GET ONLY ACTIVE
 MasterMenuRoutes.get("/menu", Authenticated, GetListMenu);

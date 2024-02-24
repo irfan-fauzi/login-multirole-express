@@ -19,7 +19,7 @@ const CreateMenuValidation = async (
     const rules: Validator.Rules = {
       name: "required|string|max:50",
       icon: "required|string",
-      ordering: "required|integer"
+      ordering: "required|numeric"
     };
 
     const validate = new Validator(_menu, rules);
@@ -67,11 +67,11 @@ const CreateSubMenuValidation = async (
     };
     const rules: Validator.Rules = {
       name: "required|string|max:50",
-      masterMenuId: "required|integer",
+      masterMenuId: "required|numeric",
       url: "required|string",
       title: "required|string|max:50",
       icon: "required|string",
-      ordering: "required|integer",
+      ordering: "required|numeric",
       isTargetSelf: "required|boolean"
     };
 
