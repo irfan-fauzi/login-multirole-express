@@ -1,4 +1,5 @@
 import { type Request, type Response } from "express";
+import { Op } from "sequelize";
 import User from "../../models/User";
 import Helper from "../helper/ResponseData";
 import PasswordHelper from "../helper/PasswordHelper";
@@ -8,6 +9,10 @@ import {
   GenerateToken,
 } from "../helper/GenerateToken";
 import Role from "../../models/Role";
+import RoleMenuAccess from "../../models/RoleMenuAccess";
+import MasterMenu from "../../models/MasterMenu";
+import SubMenu from "../../models/SubMenu";
+
 
 export const UserRegister = async (req: Request, res: Response) => {
   try {
@@ -77,6 +82,35 @@ export const UserLogin = async (req: Request, res: Response) => {
     const token = GenerateToken(dataUserWithoutToken);
     const refreshToken = GenerateRefreshToken(dataUserWithoutToken);
 
+    // access menu
+    const roleAccess = await RoleMenuAccess.findAll({
+      where: {
+        roleId: user.roleId,
+        active: true
+      }
+    })
+
+    const listSubmenuId = roleAccess.map((item) => {
+      return item.subMenuId
+    })
+
+    const menuAccess = await MasterMenu.findAll({
+      where: {
+        active: true
+      },
+      order: [
+        ['ordering', 'ASC'],
+        [SubMenu, 'ordering', 'ASC'] // [model, kolom, ascending/descending]
+      ],
+      include: {
+        model: SubMenu,
+        where: {
+          id: {[Op.in]: listSubmenuId}
+        }
+      }
+    })
+
+
     // 3. dapatkan data dengan tambahan generete token baru
     const responseUserWithToken = {
       name: user.name,
@@ -85,6 +119,7 @@ export const UserLogin = async (req: Request, res: Response) => {
       verified: user.verified,
       active: user.active,
       token: token,
+      menuAccess: menuAccess
     };
 
     // 4. update isi value tabel database user yang berisi refreshtoken

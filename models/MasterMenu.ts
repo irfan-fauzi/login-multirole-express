@@ -1,5 +1,6 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import dbConnect from "../config/dbConnect";
+import SubMenu from "./SubMenu";
 
 interface MasterMenuAttribute {
   id?: number;
@@ -56,5 +57,11 @@ MasterMenu.init(
     sequelize: dbConnect,
   }
 );
+
+// karena 1 master menu bisa punya banyak submenu 
+// penting untuk mendefinisikan relasi di Model, kalau di model tidak didefinisakan
+// maka di controller tidak akan muncul relasinya
+MasterMenu.hasMany(SubMenu)
+
 
 export default MasterMenu
