@@ -2,6 +2,9 @@ import Validator from "validatorjs";
 import { type Request, type Response, type NextFunction } from "express";
 import Helper from "../../helper/ResponseData";
 import MasterMenu from "../../../models/MasterMenu";
+import SubMenu from "../../../models/SubMenu";
+import Role from "../../../models/Role";
+
 
 
 const CreateMenuValidation = async (
@@ -104,4 +107,61 @@ const CreateSubMenuValidation = async (
   }
 };
 
-export default { CreateMenuValidation, CreateSubMenuValidation };
+const CreateAccessRoleValidation = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { roleId, subMenuId } = req.body;
+    const _menu = {
+      roleId,
+      subMenuId
+    };
+    const rules: Validator.Rules = {
+      roleId: "required|numeric",
+      subMenuId: "required|numeric"
+    };
+
+    const validate = new Validator(_menu, rules);
+    if (validate.fails()) {
+      return res
+        .status(400)
+        .send(Helper.ResponseData(400, "Bad Request", validate.errors, null));
+    }
+    const role = await Role.findOne({
+      where: {
+        id: roleId,
+        active: true
+      }
+    })
+    if(!role){
+      const errorData = {
+        errors: {
+          role: ["role id not valid"],
+        },
+      };
+      return res.status(400).send(Helper.ResponseData(400, "Bad Request", errorData, null));
+    }
+    const subMenu = await SubMenu.findOne({
+      where: {
+        id: subMenuId,
+        active: true
+      }
+    })
+    if(!subMenu){
+      const errorData = {
+        errors: {
+          submenu: ["submenu id not valid"],
+        },
+      };
+      return res.status(400).send(Helper.ResponseData(400, "Bad Request", errorData, null));
+    }
+
+    next();
+  } catch (error) {
+    return res.status(500).send(Helper.ResponseData(500, "", error, null));
+  }
+};
+
+export default { CreateMenuValidation, CreateSubMenuValidation, CreateAccessRoleValidation };

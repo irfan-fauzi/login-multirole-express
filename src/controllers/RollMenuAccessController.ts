@@ -123,7 +123,7 @@ export const SoftDeleteRollMenuAccess = async (req: Request, res: Response) => {
     }
     access.active = false
     await access.save()
-    return res.status(201).send(Helper.ResponseData(200, "OK", null, access));
+    return res.status(201).send(Helper.ResponseData(200, "OK deleted ", null, access));
   } catch (error) {
     return res.status(500).send(Helper.ResponseData(500, "", error, null));
   }
