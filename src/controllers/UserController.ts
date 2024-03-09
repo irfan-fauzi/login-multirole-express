@@ -16,7 +16,7 @@ import SubMenu from "../../models/SubMenu";
 
 export const UserRegister = async (req: Request, res: Response) => {
   try {
-    const { name, email, password, confirmPassword, roleId } = req.body;
+    const { name, email, password, confirmPassword } = req.body;
     const hashPassword = await PasswordHelper.PasswordHashing(password);
 
     const user = await User.create({
@@ -25,7 +25,7 @@ export const UserRegister = async (req: Request, res: Response) => {
       password: hashPassword,
       active: true,
       verified: true,
-      roleId: roleId,
+      roleId: 3,
     });
     return res
       .status(201)
